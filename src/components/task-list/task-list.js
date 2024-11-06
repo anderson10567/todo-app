@@ -1,42 +1,77 @@
-import './task-list.css'
+import React from 'react'
 import PropTypes from 'prop-types'
 
-import Task from '../task'
+import Task from '../task/task'
 
-function TaskList({ data, onDeleted, onToggleDone, onChange, onSubmit }) {
-  const elements = data.map((item) => {
-    const { id, className, text, done } = item
-    return (
-      <li key={id} className={className}>
+import './task-list.css'
+
+class TaskList extends React.Component {
+  render() {
+    const { todos, value, filterFlag, onActive, onDelete, onEdit, onChange, onSubmit, onPause, onPlay } = this.props
+    let filteredTodos = [...todos]
+
+    if (filterFlag === 'active') {
+      filteredTodos = filteredTodos.filter((todo) => !todo.isCompleted)
+    }
+    if (filterFlag === 'completed') {
+      filteredTodos = filteredTodos.filter((todo) => todo.isCompleted)
+    }
+    const todosItems = filteredTodos.map((item) => {
+      const { id, name, status, isEditing, isCompleted, minutes, seconds, isTimerOn } = item
+      return (
         <Task
-          done={done}
-          text={text}
-          onDeleted={() => onDeleted(id)}
-          onToggleDone={() => onToggleDone(id)}
+          id={id}
+          key={id}
+          name={name}
+          status={status}
+          isEditing={isEditing}
+          isCompleted={isCompleted}
+          minutes={minutes}
+          seconds={seconds}
+          onClick={onActive}
+          onDelete={onDelete}
+          onEdit={onEdit}
+          value={value}
           onChange={onChange}
           onSubmit={onSubmit}
-          id={id}
+          onPause={onPause}
+          onPlay={onPlay}
+          isTimerOn={isTimerOn}
         />
-      </li>
-    )
-  })
-  TaskList.defaultProps = {
-    onDeleted: () => {},
-    onToggleDone: () => {},
-    data: [{}],
+      )
+    })
+    return <ul className="todo-list">{todosItems}</ul>
   }
+}
 
-  TaskList.propTypes = {
-    onDeleted: PropTypes.func,
-    onToggleDone: PropTypes.func,
-    data: PropTypes.arrayOf(PropTypes.shape({})),
-  }
+TaskList.defaultProps = {
+  todos: [],
+  filterFlag: 'All',
+  value: 'editing task',
+  onActive: () => {},
+  onDelete: () => {},
+  onEdit: () => {},
+  onChange: () => {},
+  onSubmit: () => {},
+}
 
-  return (
-    <section className="main">
-      <ul className="todo-list">{elements}</ul>
-    </section>
-  )
+TaskList.propTypes = {
+  todos: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+      name: PropTypes.string,
+      status: PropTypes.instanceOf(Date),
+      isEditing: PropTypes.bool,
+      isCompleted: PropTypes.bool,
+    })
+  ),
+  filterFlag: PropTypes.string,
+  value: PropTypes.string,
+  onActive: PropTypes.func,
+  onDelete: PropTypes.func,
+  onEdit: PropTypes.func,
+  onChange: PropTypes.func,
+  onSubmit: PropTypes.func,
 }
 
 export default TaskList

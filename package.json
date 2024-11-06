@@ -1,11 +1,12 @@
 { 
-  "name": "todo-app", 
+  "name": "todo", 
   "version": "0.1.0", 
   "private": true, 
   "dependencies": { 
     "@testing-library/jest-dom": "^5.17.0", 
     "@testing-library/react": "^13.4.0", 
     "@testing-library/user-event": "^13.5.0", 
+    "add":"2.0.6",
     "date-fns": "^4.1.0", 
     "prop-types": "^15.8.1", 
     "react": "^18.3.1", 
@@ -21,7 +22,7 @@
     "lint": "eslint --debug src/", 
     "lint:fix": "eslint src/ --fix", 
     "format": "prettier --write src/", 
-    "prepare": "husky" 
+    "prepare": "husky & husky install" 
   }, 
   "eslintConfig": { 
     "extends": [ 
@@ -42,18 +43,18 @@
     ] 
   }, 
   "devDependencies": { 
-    "@babel/core": "^7.25.2", 
-    "@babel/preset-env": "^7.25.4", 
+    "@babel/core": "^7.25.8", 
+    "@babel/preset-env": "^7.25.8", 
     "babel-eslint": "^10.1.0", 
     "eslint": "^8.57.1", 
     "eslint-config-airbnb": "^19.0.4", 
     "eslint-config-prettier": "^9.1.0", 
     "eslint-plugin-html": "^8.1.2", 
-    "eslint-plugin-import": "^2.30.0", 
+    "eslint-plugin-import": "^2.31.0", 
     "eslint-plugin-jsx-a11y": "^6.10.0", 
     "eslint-plugin-prettier": "^5.2.1", 
-    "eslint-plugin-react": "^7.36.1", 
-    "eslint-plugin-react-hooks": "^4.6.2", 
+    "eslint-plugin-react": "^7.37.1", 
+    "eslint-plugin-react-hooks": "^4.4.0", 
     "husky": "^9.1.6", 
     "lint-staged": "^15.2.10", 
     "prettier": "^3.3.3" 
