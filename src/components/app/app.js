@@ -262,8 +262,8 @@ class App extends React.Component {
           onMinutesChange={this.addMinutesValue}
           onSecondsChange={this.addSecondsValue}
           onSubmit={this.addNewtask}
-          minValue={inputMin}
-          secValue={inputSec}
+          minuteValue={inputMin}
+          secondValue={inputSec}
           value={inputValue}
         />
         <section className="main">

@@ -33,11 +33,11 @@ class NewTaskForm extends React.Component {
   }
 
   render() {
-    const { value, minValue, secValue } = this.props
+    const { value, minuteValue, secondValue } = this.props
 
     return (
       <header className="header">
-        <h1>todos</h1>
+        <h1>Todos</h1>
         <form onSubmit={this.handleSubmit} className="new-todo-form">
           <input
             className="new-todo"
@@ -51,7 +51,7 @@ class NewTaskForm extends React.Component {
             placeholder="Min"
             maxLength={3}
             onChange={this.handleChangeMin}
-            value={minValue}
+            value={minuteValue}
           />
           <input
             className="new-todo-form__timer"
@@ -60,7 +60,7 @@ class NewTaskForm extends React.Component {
             max="59"
             placeholder="Sec"
             onChange={this.handleChangeSec}
-            value={secValue}
+            value={secondValue}
           />
           <button type="submit" />
         </form>
