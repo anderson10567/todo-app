@@ -1,36 +1,84 @@
-import { Component } from 'react'
+/* eslint-disable jsx-a11y/control-has-associated-label */
+import React from 'react'
 import './new-task-form.css'
+import PropTypes from 'prop-types'
 
-export default class NewTaskForm extends Component {
-  state = {
-    text: '',
+class NewTaskForm extends React.Component {
+  handleChangeTask = (event) => {
+    const { onChange } = this.props
+    const { value } = event.target
+    onChange(value)
   }
 
-  onLabelChange = (e) => {
-    this.setState({
-      text: e.target.value,
-    })
+  handleChangeMin = (event) => {
+    const { onMinutesChange } = this.props
+    const { value } = event.target
+    onMinutesChange(value)
   }
 
-  onSubmit = (e) => {
-    const { onItemAdded } = this.props
-    e.preventDefault()
-    const { text } = this.state
-    onItemAdded(text)
-    this.setState({
-      text: '',
-    })
+  handleChangeSec = (event) => {
+    const { onSecondsChange } = this.props
+    const { value } = event.target
+    if (value <= 59) {
+      onSecondsChange(value)
+    } else {
+      onSecondsChange('59')
+    }
+  }
+
+  handleSubmit = (event) => {
+    const { onSubmit } = this.props
+    event.preventDefault()
+    onSubmit()
   }
 
   render() {
-    const { text } = this.state
+    const { value, minuteValue, secondValue } = this.props
+
     return (
-      <section className="todoapp">
-        <form className="header" onSubmit={this.onSubmit}>
-          <h1>Todos</h1>
-          <input className="new-todo" placeholder="What needs to be done?" onChange={this.onLabelChange} value={text} />
+      <header className="header">
+        <h1>Todos</h1>
+        <form onSubmit={this.handleSubmit} className="new-todo-form">
+          <input
+            className="new-todo"
+            placeholder="What needs to be done?"
+            value={value}
+            onChange={this.handleChangeTask}
+          />
+          <input
+            type="number"
+            className="new-todo-form__timer"
+            placeholder="Min"
+            maxLength={3}
+            onChange={this.handleChangeMin}
+            value={minuteValue}
+          />
+          <input
+            className="new-todo-form__timer"
+            type="number"
+            min="0"
+            max="59"
+            placeholder="Sec"
+            onChange={this.handleChangeSec}
+            value={secondValue}
+          />
+          <button type="submit" />
         </form>
-      </section>
+      </header>
     )
   }
 }
+
+NewTaskForm.defaultProps = {
+  value: 'New task is here',
+  onChange: (text) => text,
+  onSubmit: () => [],
+}
+
+NewTaskForm.propTypes = {
+  value: PropTypes.string,
+  onChange: PropTypes.func,
+  onSubmit: PropTypes.func,
+}
+
+export default NewTaskForm

@@ -1,52 +1,155 @@
-import './task.css'
-import { Component } from 'react'
-import PropTypes from 'prop-types'
-import { formatDistanceToNow } from 'date-fns'
+/* eslint-disable prettier/prettier */
+/* eslint-disable max-len */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/control-has-associated-label */
 
-export default class Task extends Component {
+import React from 'react'
+import { formatDistanceToNow } from 'date-fns'
+import './task.css'
+import PropTypes from 'prop-types'
+
+class Task extends React.Component {
   state = {
-    createdAt: Date.now(),
+    isOn: false,
+  }
+
+  handleChange = (event) => {
+    const { onChange } = this.props
+    const { value } = event.target
+    onChange(value)
+  }
+
+  handleSubmit = (event) => {
+    const { onSubmit, id } = this.props
+    event.preventDefault()
+    onSubmit(id)
+  }
+
+  handlePlay = (id) => {
+    const { onPlay } = this.props
+    this.setState({
+      isOn: true,
+    })
+    onPlay(id)
+  }
+
+  handlePause = (id) => {
+    const { onPause } = this.props
+    this.setState({
+      isOn: false,
+    })
+    onPause(id)
+  }
+
+  handleComplitedClick = (id) => {
+    const { onClick } = this.props
+    this.setState({
+      isOn: false,
+    })
+    onClick(id)
   }
 
   render() {
-    const { text, onDeleted, onToggleDone, done } = this.props
-    const { createdAt } = this.state
-    const createdTime = new Date(createdAt)
-    const timeAgo = formatDistanceToNow(createdTime, {
-      includeSeconds: true,
-      addSuffix: true,
-    })
-
-    let classNames = 'description'
-    if (done) {
-      classNames += ' completed'
+    const {
+      name,
+      id,
+      status,
+      isCompleted = false,
+      isEditing,
+      minutes,
+      seconds,
+      onClick,
+      onDelete,
+      onEdit,
+      value,
+    } = this.props
+    const { isOn } = this.state
+    if (isEditing) {
+      return (
+        <li className="editing">
+          <div className="view"> </div>
+          <form onSubmit={this.handleSubmit}>
+            <input type="text" className="edit" value={value} onChange={this.handleChange} />
+          </form>
+        </li>
+      )
     }
-
     return (
-      <div className="view">
-        <input className="toggle" type="checkbox" checked={done} onChange={onToggleDone} />
-        <label onClick={onToggleDone}>
-          <span className={classNames} onChange={onToggleDone}>
-            {text}
-          </span>
-          <span className="created">{`created ${timeAgo}`}</span>
-        </label>
-        <button type="button" className="icon icon-edit" aria-label="Edit" />
-        <button type="button" className="icon icon-destroy" aria-label="Edit" onClick={onDeleted} />
-      </div>
+      <li className={isCompleted ? 'completed' : ''}>
+        <div className="view">
+          <input
+            className="toggle"
+            checked={isCompleted}
+            type="checkbox"
+            onClick={() => this.handleComplitedClick(id)}
+            onChange={(e) => e.target.checked}
+          />
+          <label>
+            <span className="title" onClick={() => onClick(id)}>
+              {name}
+            </span>
+            <span className="description timer">
+              <button
+                type="button"
+                className="icon icon-play"
+                onClick={() => this.handlePlay(id)}
+                disabled={isCompleted || isOn}
+              />
+              <button
+                type="button"
+                className="icon icon-pause"
+                onClick={() => this.handlePause(id)}
+                disabled={isCompleted}
+              />
+              {Number(minutes) !== 0 || Number(seconds) !== 0 ? `    ${minutes}:${seconds}` : '    Time is over!'}
+            </span>
+            <span className="description">
+              {`created ${formatDistanceToNow(status.toString(), {
+                includeSeconds: true,
+                addSuffix: true,
+              })}`}
+            </span>
+          </label>
+          <button
+            aria-label="edit form"
+            type="button"
+            className="icon icon-edit"
+            onClick={() => onEdit(id)}
+            disabled={isCompleted}
+          />
+          <button aria-label="delete form" type="button" className="icon icon-destroy" onClick={() => onDelete(id)} />
+        </div>
+      </li>
     )
   }
 }
+
 Task.defaultProps = {
-  text: '',
-  onDeleted: () => {},
-  onToggleDone: () => {},
-  done: false,
+  name: 'To do something',
+  id: 1001,
+  isEditing: false,
+  isCompleted: false,
+  status: new Date(),
+  value: 'editing task',
+  onClick: () => {},
+  onDelete: () => {},
+  onEdit: () => {},
+  onChange: () => {},
+  onSubmit: () => {},
 }
 
 Task.propTypes = {
-  text: PropTypes.string,
-  onDeleted: PropTypes.func,
-  onToggleDone: PropTypes.func,
-  done: PropTypes.bool,
+  name: PropTypes.string,
+  id: PropTypes.number,
+  isEditing: PropTypes.bool,
+  isCompleted: PropTypes.bool,
+  status: PropTypes.instanceOf(Date),
+  value: PropTypes.string,
+  onClick: PropTypes.func,
+  onDelete: PropTypes.func,
+  onEdit: PropTypes.func,
+  onChange: PropTypes.func,
+  onSubmit: PropTypes.func,
 }
+
+export default Task
